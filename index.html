@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dave Booze: Hanham Abbotonians Football Manager</title>
+    <title>Hanham Abbotonians Football Manager</title>
     <!-- Google tag (gtag.js) --> 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCKGYXWEY1"></script> 
     <script> 
@@ -126,13 +126,49 @@
         .player-role-selection .player-item span.text-xs {
             font-size: 0.75rem; /* Even smaller for stats */
         }
+
+        /* New styles for squad selection UI */
+        .player-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(253, 216, 53, 0.1);
+            cursor: pointer;
+        }
+        .player-list-item:hover {
+            background-color: #2A365A; /* Slightly lighter on hover */
+        }
+        .player-list-item:last-child {
+            border-bottom: none;
+        }
+        .player-list-item button {
+            background-color: #FDD835;
+            color: #0A1128;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            margin-left: 0.5rem;
+        }
+        .player-list-item button:hover {
+            background-color: #FFEB3B; /* Lighter yellow on hover */
+        }
+        .player-list-item button.remove-btn {
+            background-color: #EF4444; /* Red for remove */
+            color: white;
+        }
+        .player-list-item button.remove-btn:hover {
+            background-color: #DC2626; /* Darker red on hover */
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
     <div id="game-container" class="container mx-auto p-6 bg-0A1128 rounded-lg shadow-xl text-center">
         <!-- Game content will be loaded here by JavaScript -->
         <h1 class="text-4xl font-extrabold mb-8 text-FDD835 uppercase tracking-wide">
-            Dave Booze: Hanham Abbotonians Football Manager
+            Hanham Abbotonians Football Manager
         </h1>
         <div id="game-screen" class="card">
             <!-- Content will be injected here -->
@@ -247,11 +283,11 @@
         const parents = [
             { id: 'pr1', name: "Aimee", childName: "Ashton", reactionBias: -5, happiness: 70, description: "Club safeguarding officer. You often see her dealing with Ashton's mischief." },
             { id: 'pr2', name: "Gail", childName: "Connor", reactionBias: 0, happiness: 80, description: "Runs the club's bar with Emma. She's used to Connor asking to come off injured." },
-            { id: 'pr3', name: "Emma", childName: "Stan", reactionBias: 5, happiness: 85, description: "Works on the bar with Gail. She's Stan's parent (Dave's own son)." },
+            { id: 'pr3', name: "Emma", childName: "Stan", reactionBias: 5, happiness: 85, description: "Works on the bar with Gail. She's Stan's parent (your own son)." },
             { id: 'pr4', name: "Mrs. Leon", childName: "Leon", reactionBias: 0, happiness: 75, description: "Leon's parent. She's very supportive but doesn't interact much." },
             { id: 'pr5', name: "Marcus", childName: "Kyle R", reactionBias: 10, happiness: 90, description: "A true club man, runs the line sometimes, and plays for the adult team (who get thrashed every week). Always positive." },
-            { id: 'pr6', name: "Craig", childName: "Caspar", reactionBias: -10, happiness: 60, description: "Dave's assistant manager. Often distracted, loves 'duck, duck, goose' during training. His strained relationship with Caspar is noticeable." },
-            { id: 'pr7', name: "Neil", childName: "Ewan", reactionBias: -15, happiness: 65, description: "Never helps set up the pitch or run the line; just sits drinking coffee. Dave wonders why he even comes." },
+            { id: 'pr6', name: "Craig", childName: "Caspar", reactionBias: -10, happiness: 60, description: "Your assistant manager. Often distracted, loves 'duck, duck, goose' during training. His strained relationship with Caspar is noticeable." },
+            { id: 'pr7', name: "Neil", childName: "Ewan", reactionBias: -15, happiness: 65, description: "Never helps set up the pitch or run the line; just sits drinking coffee. You wonder why he even comes." },
             { id: 'pr8', name: "Raul", childName: "Zain", reactionBias: -20, happiness: 55, description: "Owns local takeaway 'Curry Nights', which often affects Zain's attendance. You can tell he prioritizes the business." },
             { id: 'pr9', name: "Alex", childName: "Jakub", reactionBias: 5, happiness: 85, description: "Loves a beer, helps setup goal posts with Matt. Often shouts at Jakub from the side, causing arguments." },
             { id: 'pr10', name: "Jade", childName: "Charlie", reactionBias: 0, happiness: 78, description: "Posh, drives a 4x4. Always punctual but keeps to herself." },
@@ -402,7 +438,7 @@
 
         function displayLeaderboard(scores) {
             const leaderboardHtml = `
-                <h3 class="text-2xl font-bold mb-4">Top Dave Booze Managers!</h3>
+                <h3 class="text-2xl font-bold mb-4">Top Hanham Abbotonians Managers!</h3>
                 <table class="w-full text-sm mb-4">
                     <thead>
                         <tr>
@@ -591,7 +627,7 @@
                 switch (player.personality) {
                     case 'mischievous':
                         attendanceChance -= 20;
-                        personalityReason = " (Dave suspects he's up to something else)";
+                        personalityReason = " (You suspect he's up to something else)";
                         break;
                     case 'injuryProne':
                         attendanceChance -= 5;
@@ -620,10 +656,31 @@
                 attendanceChance += player.attendanceBias; // From initial player setup
 
                 player.isAttending = Math.random() * 100 < attendanceChance;
-                if (!player.isAttending && !player.isInjured) {
-                    // console.log(`${player.name} is unavailable via Spond${personalityReason}.`); // For debug
-                }
+                // No message here, will be handled by the forceAvailability check
             });
+
+            // Ensure at least 11 players are available for the match
+            let availablePlayers = players.filter(p => p.isAttending);
+            if (availablePlayers.length < 11) {
+                const unavailableButHealthy = players.filter(p => !p.isAttending && !p.isInjured);
+                // Sort by readiness/morale to pick the 'best' available to force
+                unavailableButHealthy.sort((a, b) => calculateReadiness(b) - calculateReadiness(a));
+
+                let forcedPlayersCount = 0;
+                let forcedPlayersNames = [];
+
+                for (let i = 0; availablePlayers.length < 11 && i < unavailableButHealthy.length; i++) {
+                    const playerToForce = unavailableButHealthy[i];
+                    playerToForce.isAttending = true;
+                    availablePlayers.push(playerToForce); // Add to the 'available' list
+                    forcedPlayersCount++;
+                    forcedPlayersNames.push(playerToForce.name);
+                }
+
+                if (forcedPlayersCount > 0) {
+                    showMessageBox(`Spond had fewer than 11 players, so you had to do some persuading! ${forcedPlayersNames.join(', ')} are now available for selection.`);
+                }
+            }
         }
 
         // Display current game screen
@@ -640,7 +697,7 @@
 
             let welcomeHtml = `
                 <div class="p-6">
-                    <p class="text-xl mb-6">Welcome to the world of Dave Booze, manager of Hanham Abbotonians Youth U14 Eagles!</p>
+                    <p class="text-xl mb-6">Welcome to the world of Hanham Abbotonians Football! Become the manager of the Youth U14 Eagles!</p>
                     <p class="mb-4">Enter your manager name to start your journey and see your performance on the leaderboard:</p>
                     <input type="text" id="manager-name-input" placeholder="Your Manager Name" class="mb-6 max-w-sm mx-auto">
                     <button id="start-game-btn" class="btn text-xl px-8 py-3 w-full max-w-sm mx-auto flex items-center justify-center">
@@ -706,12 +763,12 @@
 
 
             const pitch = (currentWeek >= 1 && currentWeek <= (totalWeeks / 2)) ? "Lees Hill (Grass)" : "Kings Oak School (4G)";
-            const availablePlayers = players.filter(p => p.isAttending).length;
+            const availablePlayersCount = players.filter(p => p.isAttending).length;
 
             let trainingHtml = `
                 <h2 class="text-3xl font-bold mb-4">Week ${currentWeek}: Training & Spond Check</h2>
                 <p class="text-lg mb-2">Pitch: ${pitch}</p>
-                <p class="text-lg mb-4">Available for training via Spond: <span class="font-bold text-yellow-400">${availablePlayers} players</span></p>
+                <p class="text-lg mb-4">Available for training via Spond: <span class="font-bold text-yellow-400">${availablePlayersCount} players</span></p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-left">
                     <div class="card p-4">
@@ -719,8 +776,7 @@
                         <ul class="list-disc list-inside scrollable-list">
                             ${players.filter(p => p.isAttending).map(p => `
                                 <li class="${p.isInjured ? 'text-red-400 line-through' : ''}">
-                                    ${p.name} (${p.position}) <br>
-                                    <span class="text-xs text-gray-400">${p.description || ''}</span>
+                                    ${p.name} (${p.position})
                                 </li>
                             `).join('')}
                         </ul>
@@ -863,64 +919,43 @@
 
         // --- Combined Squad and Lineup Selection Screen ---
         function displayCombinedSelectionScreen() {
+            // Reset lineup and squad for fresh selection
+            selectedLineup = []; 
+            selectedSquad = []; 
+            designatedGoalkeeperId = null;
+
+            // Filter available players (not injured, attending)
             const availablePlayersForSelection = players.filter(p => !p.isInjured && p.isAttending);
 
-            if (availablePlayersForSelection.length === 0) {
-                showMessageBox("No players available for the match this week! Season will continue next week if any fixtures are left.", () => {
-                    if (currentWeek < totalWeeks) {
-                        startWeek();
-                    } else {
-                        endSeason();
-                    }
+            if (availablePlayersForSelection.length < 11) {
+                // This scenario should be rare with forceAvailability, but as a fallback
+                showMessageBox("Critical error: Less than 11 players available even after Spond check. Please restart the game or add more players.", () => {
+                    restartGame();
                 });
                 return;
             }
-
-            selectedLineup = []; // Reset lineup
-            selectedSquad = []; // Reset full squad (starters + subs)
-            designatedGoalkeeperId = null;
 
             let combinedSelectionHtml = `
                 <h2 class="text-3xl font-bold mb-4">Week ${currentWeek}: Squad & Lineup Selection</h2>
                 <p class="text-lg mb-4">Select your starting 11 players and up to 4 substitutes (max 15 total squad members).</p>
                 <p class="text-sm text-yellow-300 mb-6">Fitness (F), Morale (M), Readiness (R)</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-left player-role-selection">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6 text-left player-role-selection">
                     <div class="card p-4">
                         <h3 class="text-xl font-bold mb-2">Available Players:</h3>
                         <div class="scrollable-list" id="all-available-players-list">
-                            ${availablePlayersForSelection.map(p => `
-                                <div class="flex items-center justify-between p-1 rounded-md hover:bg-gray-700 cursor-pointer player-item" data-player-id="${p.id}">
-                                    <span>
-                                        ${p.name} (${p.position}) <br>
-                                        <span class="text-xs text-gray-400">R:${p.readiness}</span>
-                                    </span>
-                                    <div>
-                                        <label class="inline-flex items-center cursor-pointer">
-                                            <input type="radio" name="player-role-${p.id}" value="starter" class="form-radio h-4 w-4 text-green-500 starter-radio" data-player-id="${p.id}" ${selectedLineup.includes(p) ? 'checked' : ''}>
-                                            <span class="ml-1 text-sm">Start</span>
-                                        </label>
-                                        <label class="inline-flex items-center cursor-pointer ml-3">
-                                            <input type="radio" name="player-role-${p.id}" value="sub" class="form-radio h-4 w-4 text-blue-500 sub-radio" data-player-id="${p.id}" ${selectedSquad.includes(p) && !selectedLineup.includes(p) ? 'checked' : ''}>
-                                            <span class="ml-1 text-sm">Sub</span>
-                                        </label>
-                                        <label class="inline-flex items-center cursor-pointer ml-3">
-                                            <input type="radio" name="player-role-${p.id}" value="none" class="form-radio h-4 w-4 text-gray-500 none-radio" data-player-id="${p.id}" ${!selectedSquad.includes(p) ? 'checked' : ''}>
-                                            <span class="ml-1 text-sm">None</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            `).join('')}
+                            <!-- Available players will be rendered here by JS -->
                         </div>
                     </div>
                     <div class="card p-4">
                         <h3 class="text-xl font-bold mb-2">Starting XI (<span id="lineup-count">0</span>/11):</h3>
-                        <ul id="selected-lineup-display" class="list-disc list-inside scrollable-list mb-4 max-h-[200px]">
+                        <ul id="selected-lineup-display" class="list-none scrollable-list mb-4">
                             <!-- Selected starters will appear here -->
                         </ul>
-
-                        <h3 class="text-xl font-bold mb-2 mt-4">Substitutes (<span id="subs-count">0</span>/4):</h3>
-                        <ul id="selected-subs-display" class="list-disc list-inside scrollable-list mb-4 max-h-[100px]">
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="text-xl font-bold mb-2">Substitutes (<span id="subs-count">0</span>/4):</h3>
+                        <ul id="selected-subs-display" class="list-none scrollable-list mb-4">
                             <!-- Selected subs will appear here -->
                         </ul>
 
@@ -940,52 +975,96 @@
             `;
             renderScreen(combinedSelectionHtml);
 
-            document.getElementById('all-available-players-list').addEventListener('change', (event) => {
-                if (event.target.type === 'radio' && event.target.name.startsWith('player-role-')) {
-                    const playerId = event.target.dataset.playerId;
-                    const player = players.find(p => p.id === playerId);
-                    const role = event.target.value;
+            // Event delegation for the available players list
+            document.getElementById('all-available-players-list').addEventListener('click', (event) => {
+                const playerItem = event.target.closest('.player-list-item');
+                if (!playerItem) return;
 
-                    // Remove player from current roles first
-                    selectedLineup = selectedLineup.filter(p => p.id !== playerId);
-                    selectedSquad = selectedSquad.filter(p => p.id !== playerId); // Always remove from full squad before re-adding
+                const playerId = playerItem.dataset.playerId;
+                const player = players.find(p => p.id === playerId);
 
-                    if (role === 'starter') {
-                        if (selectedLineup.length < 11) {
-                            selectedLineup.push(player);
-                            selectedSquad.push(player); // Add to full squad as well
-                        } else {
-                            showMessageBox("You can only select up to 11 players for the starting lineup.");
-                            // Revert radio button state
-                            event.target.checked = false;
-                            const prevRole = player.prevRole || 'none'; // Get previous role or default to 'none'
-                            document.querySelector(`input[name="player-role-${playerId}"][value="${prevRole}"]`).checked = true;
-                            // Re-add to previous role if it was starter/sub to maintain counts
-                            if (prevRole === 'starter') selectedLineup.push(player);
-                            if (prevRole !== 'none') selectedSquad.push(player);
-                        }
-                    } else if (role === 'sub') {
-                        const currentSubsCount = selectedSquad.filter(p => !selectedLineup.includes(p)).length;
-                        if (currentSubsCount < 4) {
-                            selectedSquad.push(player); // Add to full squad
-                        } else {
-                            showMessageBox("You can only select up to 4 substitutes.");
-                            // Revert radio button state
-                            event.target.checked = false;
-                            const prevRole = player.prevRole || 'none';
-                            document.querySelector(`input[name="player-role-${playerId}"][value="${prevRole}"]`).checked = true;
-                            if (prevRole === 'starter') selectedLineup.push(player);
-                            if (prevRole !== 'none') selectedSquad.push(player);
-                        }
-                    }
-                    // Store the current role as previous role for potential re-checking
-                    if (player) player.prevRole = role;
-
-                    updateCombinedSelectionCounts();
-                    renderCombinedSelectionLists();
-                    populateGoalkeeperSelect();
+                if (selectedLineup.length < 11) {
+                    selectedLineup.push(player);
+                } else if (selectedSquad.length - selectedLineup.length < 4) {
+                    selectedSquad.push(player);
+                } else {
+                    showMessageBox("Your starting lineup and substitutes bench are full!");
+                    return;
                 }
+                // Ensure player is added to selectedSquad if not already (for initial drag/drop or simple add)
+                if (!selectedSquad.includes(player)) {
+                    selectedSquad.push(player);
+                }
+                renderCombinedSelectionLists();
+                populateGoalkeeperSelect();
+                updateCombinedSelectionCounts();
             });
+
+            // Event delegation for the starting lineup list
+            document.getElementById('selected-lineup-display').addEventListener('click', (event) => {
+                const playerItem = event.target.closest('.player-list-item');
+                if (!playerItem) return;
+
+                const playerId = playerItem.dataset.playerId;
+                const player = players.find(p => p.id === playerId);
+
+                if (event.target.classList.contains('remove-btn')) {
+                    selectedLineup = selectedLineup.filter(p => p.id !== playerId);
+                    selectedSquad = selectedSquad.filter(p => p.id !== playerId);
+                    // If the removed player was the GK, clear the GK designation
+                    if (designatedGoalkeeperId === playerId) {
+                        designatedGoalkeeperId = null;
+                    }
+                } else if (event.target.classList.contains('sub-btn')) {
+                    if (selectedSquad.length - selectedLineup.length < 4) {
+                        selectedLineup = selectedLineup.filter(p => p.id !== playerId);
+                        selectedSquad.push(player); // Player is already in selectedSquad, just move from lineup
+                        // If the moved player was the GK, clear the GK designation
+                        if (designatedGoalkeeperId === playerId) {
+                            designatedGoalkeeperId = null;
+                        }
+                    } else {
+                        showMessageBox("Your substitutes bench is full! You can't move this player to subs without removing one first.");
+                    }
+                } else {
+                    // Tapping the player name/area could also remove them
+                    selectedLineup = selectedLineup.filter(p => p.id !== playerId);
+                    selectedSquad = selectedSquad.filter(p => p.id !== playerId);
+                    if (designatedGoalkeeperId === playerId) {
+                        designatedGoalkeeperId = null;
+                    }
+                }
+                renderCombinedSelectionLists();
+                populateGoalkeeperSelect();
+                updateCombinedSelectionCounts();
+            });
+
+            // Event delegation for the substitutes list
+            document.getElementById('selected-subs-display').addEventListener('click', (event) => {
+                const playerItem = event.target.closest('.player-list-item');
+                if (!playerItem) return;
+
+                const playerId = playerItem.dataset.playerId;
+                const player = players.find(p => p.id === playerId);
+
+                if (event.target.classList.contains('remove-btn')) {
+                    selectedSquad = selectedSquad.filter(p => p.id !== playerId);
+                } else if (event.target.classList.contains('start-btn')) {
+                    if (selectedLineup.length < 11) {
+                        selectedSquad = selectedSquad.filter(p => p.id !== playerId);
+                        selectedLineup.push(player);
+                    } else {
+                        showMessageBox("Your starting lineup is already full! You can't move this player to starters without removing one first.");
+                    }
+                } else {
+                    // Tapping the player name/area could also remove them
+                    selectedSquad = selectedSquad.filter(p => p.id !== playerId);
+                }
+                renderCombinedSelectionLists();
+                populateGoalkeeperSelect();
+                updateCombinedSelectionCounts();
+            });
+
 
             document.getElementById('goalkeeper-select').addEventListener('change', (event) => {
                 designatedGoalkeeperId = event.target.value;
@@ -994,9 +1073,9 @@
             });
 
             // Initial render
-            updateCombinedSelectionCounts();
-            renderCombinedSelectionLists();
+            renderCombinedSelectionLists(); // Initial call to populate lists
             populateGoalkeeperSelect();
+            updateCombinedSelectionCounts();
         }
 
         function updateCombinedSelectionCounts() {
@@ -1004,17 +1083,20 @@
             const subsCountElement = document.getElementById('subs-count');
             const confirmBtn = document.getElementById('confirm-squad-lineup-btn');
 
+            // Calculate current subs (players in squad but not in lineup)
+            const currentSubs = selectedSquad.filter(p => !selectedLineup.some(lp => lp.id === p.id));
+
+
             if (lineupCountElement) lineupCountElement.textContent = selectedLineup.length;
-            if (subsCountElement) subsCountElement.textContent = selectedSquad.length - selectedLineup.length;
+            if (subsCountElement) subsCountElement.textContent = currentSubs.length;
 
             if (confirmBtn) {
                 // Button is enabled if:
                 // 1. Exactly 11 players are selected for the starting lineup.
                 // 2. A goalkeeper is designated.
                 // 3. Total selected squad is between 11 and 15 (11 starters + 0-4 subs).
-                const totalSquadSize = selectedSquad.length;
                 const isValidLineupCount = selectedLineup.length === 11;
-                const isValidSubCount = (selectedSquad.length - selectedLineup.length) <= 4;
+                const isValidSubCount = currentSubs.length <= 4; // Max 4 subs
                 const isGoalkeeperDesignated = designatedGoalkeeperId !== null && designatedGoalkeeperId !== "";
 
                 confirmBtn.disabled = !(isValidLineupCount && isValidSubCount && isGoalkeeperDesignated);
@@ -1023,18 +1105,52 @@
         }
 
         function renderCombinedSelectionLists() {
+            const availablePlayersList = document.getElementById('all-available-players-list');
             const selectedLineupDisplay = document.getElementById('selected-lineup-display');
             const selectedSubsDisplay = document.getElementById('selected-subs-display');
 
+            const allAvailablePlayers = players.filter(p => !p.isInjured && p.isAttending);
+
+            // Filter out players already selected for either lineup or subs
+            const playersNotInSquad = allAvailablePlayers.filter(p => 
+                !selectedLineup.some(lp => lp.id === p.id) && !selectedSquad.some(sp => sp.id === p.id)
+            );
+
+            // Sort players by readiness for display
+            playersNotInSquad.sort((a, b) => b.readiness - a.readiness);
+            selectedLineup.sort((a, b) => b.readiness - a.readiness);
+            const currentSubs = selectedSquad.filter(p => !selectedLineup.some(lp => lp.id === p.id));
+            currentSubs.sort((a, b) => b.readiness - a.readiness);
+
+            if (availablePlayersList) {
+                availablePlayersList.innerHTML = playersNotInSquad.map(p => `
+                    <div class="player-list-item" data-player-id="${p.id}">
+                        <span>${p.name} (${p.position}) <span class="text-xs text-gray-400">R:${p.readiness}</span></span>
+                        <button class="add-to-lineup-btn">Add</button>
+                    </div>
+                `).join('') || '<p class="text-gray-400 text-sm p-2">All available players are in the squad.</p>';
+            }
+
             if (selectedLineupDisplay) {
                 selectedLineupDisplay.innerHTML = selectedLineup.map(p => `
-                    <li>${p.name} (${p.position}) - R:${p.readiness} ${p.id === designatedGoalkeeperId ? '<span class="text-blue-400 font-bold">(GK)</span>' : ''}</li>
+                    <li class="player-list-item" data-player-id="${p.id}">
+                        <span>${p.name} (${p.position}) <span class="text-xs text-gray-400">R:${p.readiness}</span> ${p.id === designatedGoalkeeperId ? '<span class="text-blue-400 font-bold">(GK)</span>' : ''}</span>
+                        <div>
+                            <button class="remove-btn">Remove</button>
+                            <button class="sub-btn">Sub</button>
+                        </div>
+                    </li>
                 `).join('');
             }
             if (selectedSubsDisplay) {
-                const subs = selectedSquad.filter(p => !selectedLineup.includes(p));
-                selectedSubsDisplay.innerHTML = subs.map(p => `
-                    <li>${p.name} (${p.position}) - R:${p.readiness}</li>
+                selectedSubsDisplay.innerHTML = currentSubs.map(p => `
+                    <li class="player-list-item" data-player-id="${p.id}">
+                        <span>${p.name} (${p.position}) <span class="text-xs text-gray-400">R:${p.readiness}</span></span>
+                        <div>
+                            <button class="remove-btn">Remove</button>
+                            <button class="start-btn">Start</button>
+                        </div>
+                    </li>
                 `).join('');
             }
         }
@@ -1046,6 +1162,7 @@
             const currentGK = gkSelect.value;
             gkSelect.innerHTML = '<option value="">-- Select Goalkeeper --</option>';
 
+            // Only allow players currently in the starting lineup to be chosen as GK
             selectedLineup.forEach(player => {
                 const option = document.createElement('option');
                 option.value = player.id;
@@ -1053,6 +1170,7 @@
                 gkSelect.appendChild(option);
             });
 
+            // Retain selected GK if still in lineup, otherwise reset
             if (selectedLineup.some(p => p.id === currentGK)) {
                 gkSelect.value = currentGK;
                 designatedGoalkeeperId = currentGK;
@@ -1250,7 +1368,7 @@
                 player.matchRating = Math.max(1, Math.min(10, Math.round(baseRating)));
             });
 
-            // Dave's Commentary
+            // Manager's Commentary
             let manOfTheMatch = null;
             let plonkerOfTheWeek = null;
             let highestRating = -1;
@@ -1301,7 +1419,7 @@
                             natchCider = Math.max(0, natchCider - 1); // Lose a Natch for very upset parents
                             // Personality reveal for parent
                             if (parent.name === 'Aimee') showMessageBox(`Aimee (Ashton's parent) looks disgruntled. As the club safeguarding officer, she probably wanted Ashton to get some game time.`);
-                            else if (parent.name === 'Craig') showMessageBox(`Craig (Caspar's parent) seems annoyed that Caspar didn't play. Dave notes Craig is always distracted.`);
+                            else if (parent.name === 'Craig') showMessageBox(`Craig (Caspar's parent) seems annoyed that Caspar didn't play. You note Craig is always distracted.`);
                             else if (parent.name === 'Neil') showMessageBox(`Neil (Ewan's parent) is packing up his chair, clearly not happy Ewan didn't feature. Typical Neil.`);
                         }
                     } else {
@@ -1311,7 +1429,7 @@
                             // Craig distracted, 20% chance of no Natch bonus even if child plays well
                         } else if (parent.name === "Alex" && childInLineup.matchRating < 5) {
                              natchCider = Math.max(0, natchCider - 1);
-                             showMessageBox(`Dave notes Alex's shouting at Jakub from the sidelines has cost you a Natch!`);
+                             showMessageBox(`You note Alex's shouting at Jakub from the sidelines has cost you a Natch!`);
                         } else if (parent.name === "Marcus" && childInLineup.matchRating >= 7) {
                             // Marcus is a club man, very supportive
                             if (Math.random() < 0.5) showMessageBox(`Marcus (Kyle R's parent) is beaming, clearly proud of Kyle R's performance. His positive attitude is great for the club.`);
@@ -1322,7 +1440,7 @@
 
 
             // Update Hanham Abbotonians in league table
-            const hanhamLeagueStats = leagueTable.find(t => t.name === hanhamTeam.name);
+            const hanhamLeagueStats = leagueTable.find(t => t.name === "Hanham Abbotonians");
             if (hanhamLeagueStats) {
                 hanhamLeagueStats.played++;
                 hanhamLeagueStats.goalsFor += finalHanhamScore;
@@ -1389,7 +1507,7 @@
             });
 
             // Populate players to come on (from selectedSquad, but not in current lineup, and not injured)
-            const availableSubs = selectedSquad.filter(p => !selectedLineup.includes(p) && !p.isInjured);
+            const availableSubs = selectedSquad.filter(p => !selectedLineup.some(lp => lp.id === p.id) && !p.isInjured);
             availableSubs.forEach(p => {
                 const option = document.createElement('option');
                 option.value = p.id;
@@ -1421,21 +1539,20 @@
             }
 
             // Perform the substitution
-            const indexOff = selectedLineup.indexOf(playerOff);
+            const indexOff = selectedLineup.findIndex(p => p.id === playerOff.id);
             if (indexOff > -1) {
-                selectedLineup.splice(indexOff, 1, playerOn); // Replace playerOff with playerOn
+                // Remove player off, add player on to lineup
+                selectedLineup.splice(indexOff, 1, playerOn); 
+                // Remove player on from main selectedSquad (as they are now in lineup)
+                selectedSquad = selectedSquad.filter(p => p.id !== playerOn.id);
+                selectedSquad.push(playerOff); // Add player off back to the squad (they are now available as a sub)
 
                 // If the player coming off was the GK
                 if (designatedGoalkeeperId === playerOff.id) {
-                    // Check if the new player is also a good GK (e.g., if GK is a dedicated position)
-                    // For now, if GK is subbed off, simply clear GK designation. User needs to pick again from the lineup.
-                    designatedGoalkeeperId = null;
-                    showMessageBox(`Dave notes ${playerOff.name} is off. Please designate a new goalkeeper from the current lineup, then press OK to resume.`);
-                    // To force GK selection, we can re-render selection screen or keep modal open.
-                    // For now, we'll let the user pick in the next step by keeping modal open and calling `populateGoalkeeperSelect`.
-                    populateGoalkeeperSelect();
-                    // Do not resume match automatically; wait for GK selection
-                    return;
+                    designatedGoalkeeperId = null; // Clear GK designation, user needs to pick again
+                    showMessageBox(`You note ${playerOff.name} is off. Please designate a new goalkeeper from the current lineup, then press OK to resume.`);
+                    populateGoalkeeperSelect(); // Re-populate GK dropdown
+                    return; // Do not resume match automatically; wait for GK selection
                 }
 
                 const commentaryDiv = document.getElementById('commentary-log');
@@ -1526,12 +1643,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div class="card p-4">
-                        <h3 class="text-xl font-bold mb-2">Dave Booze's Commentary:</h3>
+                        <h3 class="text-xl font-bold mb-2">Manager ${userName}'s Commentary:</h3>
                         <p class="mb-2">Man of the Match: <span class="font-bold text-yellow-400">${motm ? motm.name : 'No one stood out!'}</span> (Rating: ${motm ? motm.matchRating : 'N/A'})</p>
                         <p class="text-sm italic mb-2">${motmJustification}</p>
                         <p>Plonker of the Week: <span class="font-bold text-red-400">${potw ? potw.name : 'Everyone was brilliant!'}</span> (Rating: ${potw ? potw.matchRating : 'N/A'})</p>
                         <p class="text-sm italic mb-2">${potwJustification}</p>
-                        <p class="mt-4 text-xl">Dave's Natch Cider: <span class="font-bold">${natchCider} <i class="fas fa-beer text-yellow-400"></i></span></p>
+                        <p class="mt-4 text-xl">Manager ${userName}'s Natch Cider: <span class="font-bold">${natchCider} <i class="fas fa-beer text-yellow-400"></i></span></p>
                     </div>
                     <div class="card p-4">
                         <h3 class="text-xl font-bold mb-2">Player Match Ratings:</h3>
@@ -1645,7 +1762,7 @@
             let endSeasonHtml = `
                 <h2 class="text-4xl font-extrabold mb-6">Season Over!</h2>
                 <div class="card p-6 mb-6">
-                    <p class="text-2xl mb-2">Dave Booze's Final Standing:</p>
+                    <p class="text-2xl mb-2">${userName}'s Final Standing:</p>
                     <p class="text-5xl font-extrabold text-yellow-400 mb-4">${hanhamFinalPosition}${getOrdinalSuffix(hanhamFinalPosition)} Place!</p>
                     <p class="text-xl">Total Natch Cider Collected: <span class="font-bold">${natchCider} <i class="fas fa-beer text-yellow-400"></i></span></p>
                     <p class="text-lg mt-4">Record: ${hanhamStats.wins} Wins, ${hanhamStats.draws} Draws, ${hanhamStats.losses} Losses</p>
@@ -1690,8 +1807,7 @@
                 p.injuryDuration = 0;
                 p.matchRating = 0;
                 p.isAttending = true; // Reset attendance for new season
-                // Reset prevRole for selection screen
-                p.prevRole = 'none';
+                // Reset prevRole for selection screen - no longer needed with new UI
             });
 
             // Reset parent happiness (optional, could carry over too)
